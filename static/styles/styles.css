@@ -6,6 +6,7 @@ html, body {
 }
 
 #wallpaper {
+  font-family: "EnvyCodeR Nerd Font Mono", monospace;
   background: #333366;
   height: 100vh;
   width: 100%;

@@ -39,8 +39,10 @@ terraform.rc
 
 # End of https://www.toptal.com/developers/gitignore/api/terraform
 
-
-
 # Added by cargo
-
 /target
+
+# Custom build directory used by build.rs
+/build
+
+.DS_Store
