@@ -1,30 +1,38 @@
-const planet = `🪐`;
+const PLANET_ICON = `🪐`;
 
 let logoY = 100;
 let logoX = 100;
 let xSpeed = 5;
 let ySpeed = 5;
 
-function setup() {
-  const canvas = document.getElementById("wallpaper");
-  const canvasContext = canvas.getContext("2d");
+let setupHasRun = false;
 
-  const scale = window.devicePixelRatio;
-  canvas.width = Math.floor(window.innerWidth * scale);
-  canvas.height = Math.floor(window.innerHeight * scale);
-  canvasContext.scale(scale, scale)
-  drawBackground();
-  draw()
-  setInterval(draw, 20);
+function setup() {
+  if (shouldDisplay()) {
+    setupHasRun = true;
+    let scale = window.devicePixelRatio;
+    canvas = document.getElementById("background");
+    canvasContext = canvas.getContext("2d");
+
+    canvas.width = Math.floor(window.innerWidth * scale);
+    canvas.height = Math.floor(window.innerHeight * scale);
+    canvasContext.scale(scale, scale)
+
+    drawBackground();
+    draw()
+    setInterval(draw, 20);
+  }
 }
 
 function draw() {
-  clearCanvas();
-  drawForeground();
+  if (shouldDisplay()) {
+    clearForeground();
+    drawForeground();
+  }
 }
 
-function clearCanvas() {
-  const canvas = document.getElementById("wallpaper");
+function clearForeground() {
+  const canvas = document.getElementById("foreground");
   const canvasContext = canvas.getContext("2d");
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
   const scale = window.devicePixelRatio;
@@ -36,31 +44,33 @@ function clearCanvas() {
 function drawBackground() {
   const canvas = document.getElementById("background");
   const canvasContext = canvas.getContext("2d");
-  const scale = window.devicePixelRatio;
-  canvas.width = Math.floor(window.innerWidth * scale);
-  canvas.height = Math.floor(window.innerHeight * scale);
-  canvasContext.scale(scale, scale)
   canvasContext.font = "10px/10px \"EnvyCodeR Nerd Font Mono\"";
   canvasContext.fillStyle = "white";
 
   var lines = nightSky.split('\n');
-
-  console.log("lines: ", lines.length);
 
   textHeight = 10;
   drawHeight = 0;
 
   var i = 0;
   while (drawHeight < canvas.height) {
-    var line = lines[i % (lines.length - 1)].slice(0, canvas.width / 10);
-    canvasContext.fillText(line, 0, drawHeight);
+    var line = lines[(i % (lines.length - 2)) + 1].slice(0, canvas.width / 10);
+    let width = canvasContext.measureText(line).width;
+    let lineStart = 0;
+    canvasContext.fillText(line, lineStart, drawHeight);
+    while (width < canvas.width) {
+      lineStart += width;
+      width += canvasContext.measureText(line).width;
+      canvasContext.fillText(line, lineStart, drawHeight);
+    }
+    console.log("Line width: ", width);
     drawHeight += textHeight;
     i++;
   }
 }
 
 function drawForeground() {
-  const canvas = document.getElementById("wallpaper");
+  const canvas = document.getElementById("foreground");
   const canvasContext = canvas.getContext("2d");
   canvasContext.font = "50px/50px \"EnvyCodeR Nerd Font Mono\"";
   canvasContext.fillStyle = "white";
@@ -68,7 +78,6 @@ function drawForeground() {
   let textWidth = 50;
   let textHeight = 50;
 
-  // Bounce off the edges
   if (logoX + textWidth > window.innerWidth || logoX < 0) {
     xSpeed = -xSpeed;
   }
@@ -79,12 +88,14 @@ function drawForeground() {
   logoX += xSpeed;
   logoY += ySpeed;
 
-  // Draw the text
-  canvasContext.fillText(planet, logoX, logoY);
+  canvasContext.fillText(PLANET_ICON, logoX, logoY);
 }
 
-function resizeCanvasesAndRedrawBackground() {
-  var canvas = document.getElementById("wallpaper");
+function handleResize() {
+  if (shouldDisplay() && !setupHasRun) {
+    setup();
+  }
+  var canvas = document.getElementById("foreground");
   var canvasContext = canvas.getContext("2d");
 
   var scale = window.devicePixelRatio;
@@ -95,15 +106,20 @@ function resizeCanvasesAndRedrawBackground() {
   canvas = document.getElementById("background");
   canvasContext = canvas.getContext("2d");
 
-  scale = window.devicePixelRatio;
   canvas.width = Math.floor(window.innerWidth * scale);
   canvas.height = Math.floor(window.innerHeight * scale);
   canvasContext.scale(scale, scale)
   drawBackground();
 }
 
+
+function shouldDisplay() {
+  let background = document.getElementById("background");
+  return getComputedStyle(background, null).display != "none";
+}
+
 window.addEventListener("load", setup);
-window.addEventListener('resize', resizeCanvasesAndRedrawBackground);
+window.addEventListener('resize', handleResize);
 
 const nightSky = `
                                                                               ✦                                                                                                                                                                     ☆                                                                       ★                                                                                                                                                  ✦                                                                                                                                                °                                                                              •                                                                        •                     ☆                                                                                          ✦                                                                                                       °                      

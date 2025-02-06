@@ -3,6 +3,9 @@ html, body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  width: 100vw;
+  overflow-y: auto; 
+  overflow-x: hidden;
 }
 
 a {
@@ -10,23 +13,24 @@ a {
   color: inherit;
 }
 
-
 #background {
   font-family: "EnvyCodeR Nerd Font Mono", monospace;
   background: #333366;
   height: 100vh;
-  width: 100%;
+  width: 100vw;
+  box-sizing: border-box;
   position: absolute;
   top: 0;
   left: 0;
   z-index: -10;
 }
 
-#wallpaper {
+#foreground {
   font-family: "EnvyCodeR Nerd Font Mono", monospace;
   background: #333366;
   height: 100vh;
   width: 100%;
+  box-sizing: border-box;
   background-color: transparent;
   position: absolute;
   top: 0;
@@ -41,7 +45,6 @@ a {
   align-items: center;
   justify-content:  center;
   color: #FFF;
-  overflow-y: scroll;
   box-sizing: border-box;
   padding: 10px 0;
 }
@@ -102,3 +105,12 @@ a {
   margin-right: 10px;
 }
 
+@media (max-width: 800px) and (min-width: 500px) {
+  #window { margin: 5px 50px; }
+}
+
+@media (max-width: 499px) {
+  #background { display: none; }
+  #foreground { display: none; }
+  body { background: #333366; }
+}

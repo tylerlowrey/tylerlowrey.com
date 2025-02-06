@@ -15,7 +15,7 @@ pub fn index_page() -> String {
 
             body {
                 canvas #background {}
-                canvas #wallpaper {}
+                canvas #foreground {}
                 #content {
                     #window {
                         pre #name {
